@@ -1,0 +1,44 @@
+---
+# Run using the following:
+# ansible-playbook --ask-sudo-pass pycharm.yml
+- hosts: 127.0.0.1
+  connection: local
+  become_user: root
+  vars:
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+      become: yes
+
+    - name: Install snapd
+      apt: pkg=snapd state=present
+      become: yes
+
+    - name: Install snapd-xdg-open
+      apt: pkg=snapd-xdg-open state=present
+      become: yes
+
+    - name: Install build-essential
+      apt: build-essential state=present
+      become: yes
+
+    - name: Install python3-pip
+      apt: pkg=python3-pip state=present
+      become: yes
+
+    - name: Install cython
+      shell: pip3 install --user cython
+
+    - name: Install PyCharm via snapd
+      shell: snap install pycharm-professional --classic
+      become: yes	
+
+    # create a file to speed up file checks
+    - name: Create inotify setting file
+      copy:
+        content: "fs.inotify.max_user_watches = 524288"
+        dest: "/etc/sysctl.d/pycharm-inotify.conf"
+
+    - name: Apply inotify setting
+      shell: sysctl -p --system
+      become: yes

@@ -1,0 +1,27 @@
+---
+# Run using the following:
+# ansible-playbook --ask-sudo-pass firewall.yml
+- hosts: 127.0.0.1
+  connection: local
+  become_user: root
+  vars:
+  tasks:
+    - name: Enable firewall
+      shell: ufw enable
+      become: yes
+
+    - name: disable RabbitMQ port
+      shell: ufw deny in 5672
+      become: yes
+
+    - name: disable Postgress port
+      shell: ufw deny in 5432
+      become: yes
+
+    - name: disable redis port
+      shell: ufw deny in 6379
+      become: yes
+
+    - name: disable SSH port
+      shell: ufw deny in 22
+      become: yes

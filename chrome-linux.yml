@@ -1,0 +1,25 @@
+---
+# Run using the following:
+# ansible-playbook --ask-sudo-pass chrome-linux.yml
+- hosts: 127.0.0.1
+  connection: local
+  become_user: root
+  vars:
+    - apt_file: /etc/apt/sources.list.d/google-chrome.list
+  tasks:
+    - name: Add apt key
+      apt_key:
+        url: https://dl-ssl.google.com/linux/linux_signing_key.pub
+        state: present
+      become: yes
+
+    - name: Update apt repository
+      apt_repository:
+        repo: deb http://dl.google.com/linux/chrome/deb/ stable main
+        state: present
+        update_cache: yes
+      become: yes
+
+    - name: Install Google Chrome
+      apt: pkg=google-chrome-stable state=present
+      become: yes
