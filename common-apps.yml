@@ -13,12 +13,6 @@
     - name: postgres
       become: yes
       apt:
-        pkg=postgresql-10
-        state=present
-
-    - name: postgres
-      become: yes
-      apt:
         pkg=postgresql-client-10
         state=present
 
