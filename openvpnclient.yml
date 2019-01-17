@@ -1,0 +1,28 @@
+---
+# Run using the following:
+# ansible-playbook --ask-sudo-pass openvpnclient.yml
+- hosts: 127.0.0.1
+  connection: local
+  become_user: root
+  vars:
+  tasks:
+    - name: network-manager-openvpn-gnome
+      apt:
+        pkg: network-manager-openvpn-gnome
+        state: present
+      become: yes
+
+    - name: update nsswitch.conf
+      lineinfile:
+        backup: yes
+        state: present
+        path: /etc/nsswitch.conf
+        regexp: 'hosts:.*'
+        line: 'hosts:          files dns [NOTFOUND=return] mdns4_minimal mdns4'
+      become: yes
+
+    - name: Restart service
+      service:
+        name: network-manager
+        state: restarted
+      become: yes
